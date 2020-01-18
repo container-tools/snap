@@ -3,10 +3,13 @@ kind: Deployment
 metadata:
   # This name uniquely identifies the Deployment
   name: minio
+  labels:
+    snap.io/component: server
 spec:
   selector:
     matchLabels:
       app: minio # has to match .spec.template.metadata.labels
+      snap.io/component: server
   strategy:
     # Specifies the strategy used to replace old Pods by new ones
     # Refer: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
@@ -16,6 +19,7 @@ spec:
       labels:
         # This label is used as a selector in Service definition
         app: minio
+        snap.io/component: server
     spec:
       # Volumes used by this deployment
       volumes:

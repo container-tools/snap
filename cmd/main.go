@@ -1,30 +1,48 @@
 package main
 
 import (
-	"io/ioutil"
-	"log"
-	"os"
+	"context"
 
-	"github.com/nicolaferraro/snap/v2/pkg/deployer/java"
-	"github.com/nicolaferraro/snap/v2/pkg/publisher"
+	"github.com/nicolaferraro/snap/pkg/api"
+	"github.com/nicolaferraro/snap/pkg/client"
+	"github.com/nicolaferraro/snap/pkg/util/log"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 func main() {
-	dir, err := ioutil.TempDir("", "snap-")
+
+	ctx := context.Background()
+
+	logf.SetLogger(zap.New(func(o *zap.Options) {
+		o.Development = true
+	}))
+
+	cfg, err := client.NewRestConfig()
 	if err != nil {
-		log.Fatal("can't create temporary dir: ", err)
-	}
-	defer os.RemoveAll(dir)
-
-	deployer := java.JavaDeployer{}
-	if err := deployer.Deploy("./example", dir); err != nil {
-		log.Fatal("error while creating deployment for java source: ", err)
+		log.Info("can't get Kubernetes configuration")
+		panic(err)
 	}
 
-	pub := publisher.Publisher{}
-	if err := pub.Publish(dir, "extensions/ext1"); err != nil {
-		log.Fatal("cannot publish to server: ", err)
+	ns, err := client.GetCurrentNamespace()
+	if err != nil {
+		log.Info("can't get current Kubernetes namespace")
+		panic(err)
 	}
 
-	println("Uploaded!!")
+	options := api.SnapOptions{}
+
+	snap, err := api.NewSnap(cfg, ns, false, options)
+	if err != nil {
+		log.Info("can't initialize snap")
+		panic(err)
+	}
+
+	err = snap.Deploy(ctx, "./example")
+	if err != nil {
+		log.Info("error during deployment")
+		panic(err)
+	}
+
+	log.Info("Terminating...")
 }
