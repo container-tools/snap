@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"path"
 
-	"github.com/nicolaferraro/snap/pkg/deployer"
+	"github.com/nicolaferraro/snap/pkg/language"
 	"github.com/nicolaferraro/snap/pkg/util/log"
 )
 
-type JavaDeployer struct {
+type JavaBindings struct {
 	stdOut io.Writer
 	stdErr io.Writer
 }
@@ -18,14 +19,14 @@ var (
 	logger = log.WithName("java-deployer")
 )
 
-func NewJavaDeployer(stdOut, stdErr io.Writer) deployer.Deployer {
-	return &JavaDeployer{
+func NewJavaBindings(stdOut, stdErr io.Writer) language.Bindings {
+	return &JavaBindings{
 		stdOut: stdOut,
 		stdErr: stdErr,
 	}
 }
 
-func (d *JavaDeployer) Deploy(source, destination string) error {
+func (d *JavaBindings) Deploy(source, destination string) error {
 	logger.Infof("Executing maven release phase on project %s", source)
 	cmd := exec.Command("./mvnw", "deploy", "-DskipTests", fmt.Sprintf("-DaltDeploymentRepository=snapshot-repo::default::file:%s", destination))
 	cmd.Dir = source
@@ -37,4 +38,13 @@ func (d *JavaDeployer) Deploy(source, destination string) error {
 	}
 	logger.Infof("Maven release phase completed for project %s", source)
 	return nil
+}
+
+func (d *JavaBindings) GetID(source string) (string, error) {
+	pomLocation := path.Join(source, "pom.xml")
+	project, err := parsePomFile(pomLocation)
+	if err != nil {
+		return "", err
+	}
+	return project.GetID(), nil
 }

@@ -38,11 +38,13 @@ func main() {
 		panic(err)
 	}
 
-	err = snap.Deploy(ctx, "./example")
+	id, err := snap.Deploy(ctx, "./example")
 	if err != nil {
 		log.Info("error during deployment")
 		panic(err)
 	}
+
+	log.Infof("Deployed application %s", id)
 
 	log.Info("Terminating...")
 }
