@@ -10,6 +10,7 @@ require (
 	github.com/minio/minio-go/v6 v6.0.44 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/rakyll/statik v0.1.6
+	github.com/sethvargo/go-password v0.1.3
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.3.0
 	k8s.io/api v0.0.0-20190918155943-95b840bb6a1f

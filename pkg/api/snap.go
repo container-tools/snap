@@ -42,6 +42,11 @@ type SnapOptions struct {
 	StdErr io.Writer
 }
 
+type SnapCredentials struct {
+	AccessKey string
+	SecretKey string
+}
+
 func NewSnap(config *rest.Config, namespace string, direct bool, options SnapOptions) (*Snap, error) {
 	if options.Bucket == "" {
 		options.Bucket = DefaultBucketName
@@ -88,6 +93,11 @@ func (s *Snap) Deploy(ctx context.Context, libraryDir string) (string, error) {
 		return id, err
 	}
 
+	credentials, err := s.GetCredentials(ctx)
+	if err != nil {
+		return id, err
+	}
+
 	dir, err := ioutil.TempDir("", "snap-")
 	if err != nil {
 		return id, errors.Wrap(err, "cannot create a temporary dir")
@@ -103,7 +113,7 @@ func (s *Snap) Deploy(ctx context.Context, libraryDir string) (string, error) {
 		return id, err
 	}
 
-	publishDestination := publisher.NewPublishDestination(host, "minio", "minio123", false)
+	publishDestination := publisher.NewPublishDestination(host, credentials.AccessKey, credentials.SecretKey, false)
 
 	if err := s.publisherModule.Publish(dir, s.options.Bucket, publishDestination); err != nil {
 		return id, errors.Wrap(err, "cannot publish to server")
@@ -117,4 +127,15 @@ func (s *Snap) Install(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func (s *Snap) GetCredentials(ctx context.Context) (*SnapCredentials, error) {
+	key, secret, err := s.installerModule.GetCredentials(ctx, s.namespace)
+	if err != nil {
+		return nil, err
+	}
+	return &SnapCredentials{
+		AccessKey: key,
+		SecretKey: secret,
+	}, nil
 }
