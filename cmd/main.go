@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/nicolaferraro/snap/pkg/api"
 	"github.com/nicolaferraro/snap/pkg/client"
@@ -11,6 +13,12 @@ import (
 )
 
 func main() {
+
+	if len(os.Args) != 2 {
+		fmt.Printf("Expected 1 argument, got %d\n", len(os.Args)-1)
+		os.Exit(1)
+	}
+	lib := os.Args[1]
 
 	ctx := context.Background()
 
@@ -38,7 +46,7 @@ func main() {
 		panic(err)
 	}
 
-	id, err := snap.Deploy(ctx, "./example")
+	id, err := snap.Deploy(ctx, lib)
 	if err != nil {
 		log.Info("error during deployment")
 		panic(err)

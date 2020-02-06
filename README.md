@@ -18,7 +18,7 @@ make
 To deploy the example project:
 
 ```
-./snap
+./snap example/library
 ```
 
 Should be successful.
@@ -37,10 +37,18 @@ Get the Minio endpoint from the Route:
 export MINIO_ENDPOINT=$(oc get route minio-service -o jsonpath='{.spec.host}')
 ```
 
+Get the username and password from the secret:
+
+```
+oc get secret minio-credentials -o yaml
+# to convert each entry
+# echo --type-the-base64-data-here-- | base64 -d
+```
+
 Download the `mc` tool from Minio, then:
 
 ```
-mc config host add minio http://$MINIO_ENDPOINT minio minio123
+mc config host add minio http://$MINIO_ENDPOINT minio-access-key-got-before minio-access-secret-got-before
 ```
 
 List the data:

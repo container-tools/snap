@@ -139,7 +139,7 @@ func (i *Installer) installSecret(ctx context.Context, ns string) error {
 	if err != nil {
 		return err
 	}
-	secretKey, err := password.Generate(64, 10, 10, false, false)
+	secretKey, err := password.Generate(64, 10, 0, false, true)
 	if err != nil {
 		return err
 	}

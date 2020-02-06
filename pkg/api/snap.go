@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -127,6 +128,14 @@ func (s *Snap) Install(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func (s *Snap) GetEndpoint(ctx context.Context) (string, error) {
+	host, err := s.installerModule.GetDirectConnectionHost(ctx, s.namespace)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("http://%s", host), nil
 }
 
 func (s *Snap) GetCredentials(ctx context.Context) (*SnapCredentials, error) {

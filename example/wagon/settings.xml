@@ -1,0 +1,15 @@
+<settings>
+
+    <servers>
+        <server>
+          <id>s3-minio</id>
+          <!-- put the right credentials here -->
+          <username>mofrebyrji78izgeqzz4tlxsrxmf9lis8equd9zxz3sarumj0l2kanwvj4knfozf</username>
+          <password>vTSTmBypnfT0sWjDvyxIFP9lARg1l1F7ej5pd8oe9hmZCr7aSFOIs9zeHdqRjDwv</password>
+          <configuration>
+            <endpoint>http://127.0.0.1:9000</endpoint>
+          </configuration>
+        </server>
+    </servers>
+
+</settings>
