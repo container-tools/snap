@@ -1,4 +1,6 @@
 
+test: build
+
 build: vfs
 	go build -o snap ./cmd/
 
