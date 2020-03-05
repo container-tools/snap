@@ -44,8 +44,7 @@ type SnapOptions struct {
 }
 
 type SnapCredentials struct {
-	AccessKey string
-	SecretKey string
+	installer.InstallerSnapCredentials
 }
 
 func NewSnap(config *rest.Config, namespace string, direct bool, options SnapOptions) (*Snap, error) {
@@ -139,12 +138,11 @@ func (s *Snap) GetEndpoint(ctx context.Context) (string, error) {
 }
 
 func (s *Snap) GetCredentials(ctx context.Context) (*SnapCredentials, error) {
-	key, secret, err := s.installerModule.GetCredentials(ctx, s.namespace)
+	credentials, err := s.installerModule.GetCredentials(ctx, s.namespace)
 	if err != nil {
 		return nil, err
 	}
 	return &SnapCredentials{
-		AccessKey: key,
-		SecretKey: secret,
+		credentials,
 	}, nil
 }

@@ -37,6 +37,14 @@ type Installer struct {
 	stdErr io.Writer
 }
 
+type InstallerSnapCredentials struct {
+	SecretName     string
+	AccessKeyEntry string
+	AccessKey      string
+	SecretKeyEntry string
+	SecretKey      string
+}
+
 func NewInstaller(config *restclient.Config, client ctrl.Client, stdOut, stdErr io.Writer) *Installer {
 	return &Installer{
 		config: config,
@@ -111,21 +119,27 @@ func (i *Installer) EnsureInstalled(ctx context.Context, ns string) error {
 	return nil
 }
 
-func (i *Installer) GetCredentials(ctx context.Context, ns string) (key, keySecret string, err error) {
+func (i *Installer) GetCredentials(ctx context.Context, ns string) (credentials InstallerSnapCredentials, err error) {
 	secrets := corev1.SecretList{}
 	if err := i.client.List(ctx, &secrets, ctrl.InNamespace(ns), ctrl.MatchingLabels(serverLabels)); err != nil {
-		return key, keySecret, err
+		return credentials, err
 	}
 	if len(secrets.Items) == 0 {
-		return key, keySecret, errors.New("no credentials found for the server")
+		return credentials, errors.New("no credentials found for the server")
 	}
 	secret := secrets.Items[0]
-	key = string(secret.Data[AccessKeyEntry])
-	keySecret = string(secret.Data[SecretKeyEntry])
+	key := string(secret.Data[AccessKeyEntry])
+	keySecret := string(secret.Data[SecretKeyEntry])
 	if len(key) == 0 || len(keySecret) == 0 {
-		return key, keySecret, errors.New("empty credentials found")
+		return credentials, errors.New("empty credentials found")
 	}
-	return key, keySecret, nil
+
+	credentials.SecretName = secret.Name
+	credentials.AccessKey = key
+	credentials.AccessKeyEntry = AccessKeyEntry
+	credentials.SecretKey = keySecret
+	credentials.SecretKeyEntry = SecretKeyEntry
+	return credentials, nil
 }
 
 func (i *Installer) installSecret(ctx context.Context, ns string) error {
