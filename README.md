@@ -1,19 +1,14 @@
-# snap
+# Snap
 
-Simple POC to upload a Maven example to Minio.
+Snap is a simple tool that allows publishing SNAPSHOT libraries into a Kubernetes
+cluster, so that they can be used by on-cluster build tools.
 
-## Setup
+The backend that stores the artifacts is based on [Minio](https://min.io). 
 
-Checkout this git repo.
+## Usage
 
-Connect to a Openshift namespace.
-
-Build the application with:
-```
-make
-```
-
-## Publish
+Download a version of Snap from the [release page](https://github.com/container-tools/snap/releases)
+and put it into your OS path.
 
 To deploy the example project:
 
@@ -23,24 +18,26 @@ To deploy the example project:
 
 Should be successful.
 
-## Verify
+## To Verify
 
-Expose the minio service as route:
-
-```
-oc expose service/minio-service
-```
-
-Get the Minio endpoint from the Route:
+On OpenShift, expose the Minio service as route:
 
 ```
-export MINIO_ENDPOINT=$(oc get route minio-service -o jsonpath='{.spec.host}')
+oc expose service/snap-minio-service
 ```
+
+Then get the Minio endpoint from the Route:
+
+```
+export MINIO_ENDPOINT=$(oc get route snap-minio-service -o jsonpath='{.spec.host}')
+```
+
+On vanilla Kubernetes, it depends on your installation, but you need to expose the service as well.
 
 Get the username and password from the secret:
 
 ```
-oc get secret minio-credentials -o yaml
+kubectl get secret snap-minio-credentials -o yaml
 # to convert each entry
 # echo --type-the-base64-data-here-- | base64 -d
 ```

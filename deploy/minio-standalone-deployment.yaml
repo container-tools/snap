@@ -1,71 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # This name uniquely identifies the Deployment
-  name: minio
+  name: snap-minio
   labels:
-    snap.io/component: server
+    snap.container-tools.io/component: server
 spec:
   selector:
     matchLabels:
-      app: minio # has to match .spec.template.metadata.labels
-      snap.io/component: server
+      snap.container-tools.io/component: server
   strategy:
-    # Specifies the strategy used to replace old Pods by new ones
-    # Refer: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
     type: Recreate
   template:
     metadata:
       labels:
-        # This label is used as a selector in Service definition
-        app: minio
-        snap.io/component: server
+        snap.container-tools.io/component: server
     spec:
-      # Volumes used by this deployment
       volumes:
       - name: data
-        # This volume is based on PVC
         persistentVolumeClaim:
-          # Name of the PVC created earlier
-          claimName: minio-pv-claim
+          claimName: snap-minio-pv-claim
       containers:
       - name: minio
-        # Volume mounts for this container
         volumeMounts:
-        # Volume 'data' is mounted to path '/data'
         - name: data 
           mountPath: "/data"
-        # Pulls the lastest Minio image from Docker Hub
-        image: minio/minio:RELEASE.2020-01-03T19-12-21Z
+        image: minio/minio
         args:
         - server
         - /data
         env:
-        # MinIO access key and secret key
         - name: MINIO_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: minio-credentials
+              name: snap-minio-credentials
               key: access-key
         - name: MINIO_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: minio-credentials
+              name: snap-minio-credentials
               key: secret-key
         ports:
         - containerPort: 9000
-        # Readiness probe detects situations when MinIO server instance
-        # is not ready to accept traffic. Kubernetes doesn't forward
-        # traffic to the pod while readiness checks fail.
         readinessProbe:
           httpGet:
             path: /minio/health/ready
             port: 9000
           initialDelaySeconds: 10
           periodSeconds: 10
-        # Liveness probe detects situations where MinIO server instance
-        # is not working properly and needs restart. Kubernetes automatically
-        # restarts the pods if liveness checks fail.
         livenessProbe:
           httpGet:
             path: /minio/health/live

@@ -21,7 +21,7 @@ var (
 	logger = log.WithName("installer")
 
 	serverLabels = map[string]string{
-		"snap.io/component": "server",
+		"snap.container-tools.io/component": "server",
 	}
 )
 
