@@ -8,4 +8,4 @@ vfs:
 test:
 	go test ./...
 
-.PHONY: build vfs
+.PHONY: build vfs test

@@ -16,7 +16,7 @@ type MavenProject struct {
 }
 
 type MavenParentInfo struct {
-	GroupId string `xml:"GroupId"`
+	GroupId string `xml:"groupId"`
 	Version string `xml:"version"`
 }
 
