@@ -19,9 +19,11 @@ package log
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/go-logr/logr"
-	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"github.com/go-logr/stdr"
 )
 
 // Log --
@@ -29,7 +31,7 @@ var Log Logger
 
 func init() {
 	Log = Logger{
-		delegate: logf.Log.WithName("snap"),
+		delegate: stdr.New(log.New(os.Stdout, "", log.LstdFlags|log.Lshortfile)).WithName("snap"),
 	}
 }
 
