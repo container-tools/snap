@@ -14,7 +14,7 @@ func TestMavenParse(t *testing.T) {
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>me.nicolaferraro.snap</groupId>
+  <groupId>me.container-tools.snap</groupId>
   <artifactId>example</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -40,11 +40,11 @@ func TestMavenParse(t *testing.T) {
 `
 	model, err := parsePomData(pom)
 	assert.Nil(t, err)
-	assert.Equal(t, "me.nicolaferraro.snap", model.GetGroupID())
+	assert.Equal(t, "me.container-tools.snap", model.GetGroupID())
 	assert.Equal(t, "example", model.GetArtifactID())
 	assert.Equal(t, "1.0-SNAPSHOT", model.GetVersion())
 	assert.Equal(t, "jar", model.GetPackaging())
-	assert.Equal(t, "me.nicolaferraro.snap:example:1.0-SNAPSHOT", model.GetID())
+	assert.Equal(t, "me.container-tools.snap:example:1.0-SNAPSHOT", model.GetID())
 }
 
 func TestMavenParseWithParent(t *testing.T) {
@@ -55,7 +55,7 @@ func TestMavenParseWithParent(t *testing.T) {
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>me.nicolaferraro.snap</groupId>
+    <groupId>me.container-tools.snap</groupId>
     <artifactId>example-Parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
@@ -84,9 +84,9 @@ func TestMavenParseWithParent(t *testing.T) {
 `
 	model, err := parsePomData(pom)
 	assert.Nil(t, err)
-	assert.Equal(t, "me.nicolaferraro.snap", model.GetGroupID())
+	assert.Equal(t, "me.container-tools.snap", model.GetGroupID())
 	assert.Equal(t, "example", model.GetArtifactID())
 	assert.Equal(t, "1.0-SNAPSHOT", model.GetVersion())
 	assert.Equal(t, "", model.GetPackaging())
-	assert.Equal(t, "me.nicolaferraro.snap:example:1.0-SNAPSHOT", model.GetID())
+	assert.Equal(t, "me.container-tools.snap:example:1.0-SNAPSHOT", model.GetID())
 }

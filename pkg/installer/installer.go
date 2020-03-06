@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 
-	kubeutils "github.com/nicolaferraro/snap/pkg/util/kubernetes"
-	"github.com/nicolaferraro/snap/pkg/util/log"
-	"github.com/nicolaferraro/snap/pkg/util/vsf"
+	kubeutils "github.com/container-tools/snap/pkg/util/kubernetes"
+	"github.com/container-tools/snap/pkg/util/log"
+	"github.com/container-tools/snap/pkg/util/vsf"
 	"github.com/sethvargo/go-password/password"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"

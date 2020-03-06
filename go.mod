@@ -1,4 +1,4 @@
-module github.com/nicolaferraro/snap
+module github.com/container-tools/snap
 
 go 1.13
 

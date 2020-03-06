@@ -1,4 +1,4 @@
-package me.nicolaferraro.snap;
+package io.containertools.snap;
 
 /**
  * Hello world!

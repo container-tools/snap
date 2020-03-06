@@ -6,8 +6,8 @@ import (
 	"os/exec"
 	"path"
 
-	"github.com/nicolaferraro/snap/pkg/language"
-	"github.com/nicolaferraro/snap/pkg/util/log"
+	"github.com/container-tools/snap/pkg/language"
+	"github.com/container-tools/snap/pkg/util/log"
 )
 
 type JavaBindings struct {

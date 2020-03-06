@@ -55,16 +55,16 @@ mc ls --recursive minio
 
 Example result:
 ```
-[2020-01-18 01:01:03 CET]  2.8KiB snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.jar
-[2020-01-18 01:01:03 CET]     32B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.jar.md5
-[2020-01-18 01:01:03 CET]     40B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.jar.sha1
-[2020-01-18 01:01:03 CET]  2.6KiB snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.pom
-[2020-01-18 01:01:03 CET]     32B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.pom.md5
-[2020-01-18 01:01:03 CET]     40B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.pom.sha1
-[2020-01-18 01:01:03 CET]    772B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/maven-metadata.xml
-[2020-01-18 01:01:03 CET]     32B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/maven-metadata.xml.md5
-[2020-01-18 01:01:03 CET]     40B snap/me/nicolaferraro/snap/example/1.0-SNAPSHOT/maven-metadata.xml.sha1
-[2020-01-18 01:01:03 CET]    286B snap/me/nicolaferraro/snap/example/maven-metadata.xml
-[2020-01-18 01:01:03 CET]     32B snap/me/nicolaferraro/snap/example/maven-metadata.xml.md5
-[2020-01-18 01:01:03 CET]     40B snap/me/nicolaferraro/snap/example/maven-metadata.xml.sha1
+[2020-01-18 01:01:03 CET]  2.8KiB snap/io/container-tools/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.jar
+[2020-01-18 01:01:03 CET]     32B snap/io/container-tools/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.jar.md5
+[2020-01-18 01:01:03 CET]     40B snap/io/container-tools/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.jar.sha1
+[2020-01-18 01:01:03 CET]  2.6KiB snap/io/container-tools/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.pom
+[2020-01-18 01:01:03 CET]     32B snap/io/container-tools/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.pom.md5
+[2020-01-18 01:01:03 CET]     40B snap/io/container-tools/snap/example/1.0-SNAPSHOT/example-1.0-20200118.000050-1.pom.sha1
+[2020-01-18 01:01:03 CET]    772B snap/io/container-tools/snap/example/1.0-SNAPSHOT/maven-metadata.xml
+[2020-01-18 01:01:03 CET]     32B snap/io/container-tools/snap/example/1.0-SNAPSHOT/maven-metadata.xml.md5
+[2020-01-18 01:01:03 CET]     40B snap/io/container-tools/snap/example/1.0-SNAPSHOT/maven-metadata.xml.sha1
+[2020-01-18 01:01:03 CET]    286B snap/io/container-tools/snap/example/maven-metadata.xml
+[2020-01-18 01:01:03 CET]     32B snap/io/container-tools/snap/example/maven-metadata.xml.md5
+[2020-01-18 01:01:03 CET]     40B snap/io/container-tools/snap/example/maven-metadata.xml.sha1
 ```

@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	_ "github.com/nicolaferraro/snap/statik"
+	_ "github.com/container-tools/snap/statik"
 	"github.com/rakyll/statik/fs"
 )
 

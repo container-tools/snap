@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/container-tools/snap/pkg/util/log"
 	minio "github.com/minio/minio-go"
-	"github.com/nicolaferraro/snap/pkg/util/log"
 	"github.com/pkg/errors"
 )
 

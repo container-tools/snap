@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nicolaferraro/snap/pkg/api"
-	"github.com/nicolaferraro/snap/pkg/client"
-	"github.com/nicolaferraro/snap/pkg/util/log"
+	"github.com/container-tools/snap/pkg/api"
+	"github.com/container-tools/snap/pkg/client"
+	"github.com/container-tools/snap/pkg/util/log"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
