@@ -129,6 +129,10 @@ func (s *Snap) Install(ctx context.Context) error {
 	return nil
 }
 
+func (s *Snap) IsInstalled(ctx context.Context) (bool, error) {
+	return s.installerModule.IsInstalled(ctx, s.namespace)
+}
+
 func (s *Snap) GetEndpoint(ctx context.Context) (string, error) {
 	host, err := s.installerModule.GetDirectConnectionHost(ctx, s.namespace)
 	if err != nil {

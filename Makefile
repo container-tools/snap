@@ -1,5 +1,5 @@
 
-build: vfs
+build: vfs test
 	go build -o snap ./cmd/
 
 vfs:

@@ -54,7 +54,7 @@ func NewInstaller(config *restclient.Config, client ctrl.Client, stdOut, stdErr 
 	}
 }
 
-func (i *Installer) isInstalled(ctx context.Context, ns string) (bool, error) {
+func (i *Installer) IsInstalled(ctx context.Context, ns string) (bool, error) {
 	deploymentList := appsv1.DeploymentList{}
 	if err := i.client.List(ctx, &deploymentList, ctrl.InNamespace(ns), ctrl.MatchingLabels(serverLabels)); err != nil {
 		return false, err
@@ -95,7 +95,7 @@ func (i *Installer) GetDirectConnectionHost(ctx context.Context, ns string) (str
 }
 
 func (i *Installer) EnsureInstalled(ctx context.Context, ns string) error {
-	if installed, err := i.isInstalled(ctx, ns); err != nil {
+	if installed, err := i.IsInstalled(ctx, ns); err != nil {
 		return err
 	} else if installed {
 		logger.Info("Snap is already installed: skipping")
