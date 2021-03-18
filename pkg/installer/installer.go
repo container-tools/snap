@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/container-tools/snap/deploy"
 	kubeutils "github.com/container-tools/snap/pkg/util/kubernetes"
 	"github.com/container-tools/snap/pkg/util/log"
-	"github.com/container-tools/snap/pkg/util/vsf"
 	"github.com/sethvargo/go-password/password"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -143,7 +143,7 @@ func (i *Installer) GetCredentials(ctx context.Context, ns string) (credentials 
 }
 
 func (i *Installer) installSecret(ctx context.Context, ns string) error {
-	obj, err := kubeutils.LoadResourceFromYamlFile(scheme.Scheme, "/minio-standalone-secret.yaml", vsf.LoadAsString)
+	obj, err := kubeutils.LoadResourceFromYaml(scheme.Scheme, deploy.ResourceAsString("/minio-standalone-secret.yaml"))
 	if err != nil {
 		return err
 	}
@@ -168,7 +168,7 @@ func (i *Installer) installSecret(ctx context.Context, ns string) error {
 }
 
 func (i *Installer) installResource(ctx context.Context, ns string, name string) error {
-	pvc, err := kubeutils.LoadResourceFromYamlFile(scheme.Scheme, name, vsf.LoadAsString)
+	pvc, err := kubeutils.LoadResourceFromYaml(scheme.Scheme, deploy.ResourceAsString(name))
 	if err != nil {
 		return err
 	}
