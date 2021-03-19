@@ -1,11 +1,18 @@
 
-build: vfs test
-	go build -o snap ./cmd/
+GOLDFLAGS += -X main.GitCommit=$(GIT_COMMIT)
+GOFLAGS = -ldflags "$(GOLDFLAGS)" -gcflags=-trimpath=$(GO_PATH) -asmflags=-trimpath=$(GO_PATH)
 
-vfs:
-	GO111MODULE=on go run github.com/rakyll/statik -src=deploy -f
+default: build
+
+build: build-resources build-snap test
+
+build-snap:
+	go build $(GOFLAGS) -o snap ./cmd/manager/*.go
+
+build-resources:
+	go run ./cmd/util/vfs-gen/ deploy
 
 test:
 	go test ./...
 
-.PHONY: build vfs test
+.PHONY: build build-resources build-snap test

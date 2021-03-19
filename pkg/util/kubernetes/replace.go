@@ -10,7 +10,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
-	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var skipReplace = map[string]bool{
@@ -18,7 +17,7 @@ var skipReplace = map[string]bool{
 }
 
 // ReplaceResources allows to completely replace a list of resources on Kubernetes, taking care of immutable fields and resource versions
-func ReplaceResources(ctx context.Context, c ctrl.Client, objects []runtime.Object) error {
+func ReplaceResources(ctx context.Context, c ctrl.Client, objects []ctrl.Object) error {
 	for _, object := range objects {
 		err := ReplaceResource(ctx, c, object)
 		if err != nil {
@@ -29,7 +28,7 @@ func ReplaceResources(ctx context.Context, c ctrl.Client, objects []runtime.Obje
 }
 
 // ReplaceResourceInNamespace sets the namespace before replacing
-func ReplaceResourceInNamespace(ctx context.Context, c ctrl.Client, object runtime.Object, ns string) error {
+func ReplaceResourceInNamespace(ctx context.Context, c ctrl.Client, object ctrl.Object, ns string) error {
 	if meta, ok := object.(metav1.Object); ok {
 		meta.SetNamespace(ns)
 	}
@@ -37,7 +36,7 @@ func ReplaceResourceInNamespace(ctx context.Context, c ctrl.Client, object runti
 }
 
 // ReplaceResource allows to completely replace a resource on Kubernetes, taking care of immutable fields and resource versions
-func ReplaceResource(ctx context.Context, c ctrl.Client, res runtime.Object) error {
+func ReplaceResource(ctx context.Context, c ctrl.Client, res ctrl.Object) error {
 	err := c.Create(ctx, res)
 	if err != nil && k8serrors.IsAlreadyExists(err) {
 		var typeInfo meta.Type
@@ -48,12 +47,9 @@ func ReplaceResource(ctx context.Context, c ctrl.Client, res runtime.Object) err
 		if skipReplace[typeInfo.GetKind()] {
 			return nil
 		}
-		existing := res.DeepCopyObject()
-		var key k8sclient.ObjectKey
-		key, err = k8sclient.ObjectKeyFromObject(existing)
-		if err != nil {
-			return err
-		}
+		existing := res.DeepCopyObject().(ctrl.Object)
+		var key ctrl.ObjectKey
+		key = ctrl.ObjectKeyFromObject(existing)
 		err = c.Get(ctx, key, existing)
 		if err != nil {
 			return err
