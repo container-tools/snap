@@ -67,9 +67,15 @@ func NewSnap(config *rest.Config, namespace string, direct bool, options SnapOpt
 	if err != nil {
 		return nil, err
 	}
+
+	installerModule, err := installer.NewInstaller(config, client, options.StdOut, options.StdErr)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Snap{
 		languageModule:  java.NewJavaBindings(options.StdOut, options.StdErr),
-		installerModule: installer.NewInstaller(config, client, options.StdOut, options.StdErr),
+		installerModule: installerModule,
 		publisherModule: publisher.NewPublisher(),
 
 		namespace: namespace,

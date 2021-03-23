@@ -2,9 +2,11 @@ package client
 
 import (
 	"io/ioutil"
+	"k8s.io/client-go/kubernetes"
 	"os"
 	"os/user"
 	"path/filepath"
+	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -14,9 +16,16 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 
+	restclient "k8s.io/client-go/rest"
 	clientcmdlatest "k8s.io/client-go/tools/clientcmd/api/latest"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
+
+type Client struct {
+	kubernetes.Interface
+	ctrl.Client
+	Config *restclient.Config
+}
 
 // NewClient creates a new k8s client that can be used from outside or in the cluster
 func NewRestConfig() (*rest.Config, error) {
