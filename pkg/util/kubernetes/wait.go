@@ -3,16 +3,17 @@ package kubernetes
 import (
 	"context"
 	"errors"
+	snapclient "github.com/container-tools/snap/pkg/client"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
-	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func WaitForPodReady(ctx context.Context, client ctrl.Client, ns string, labels map[string]string) (string, error) {
+func WaitForPodReady(ctx context.Context, client snapclient.Client, ns string, labelSelector string) (string, error) {
 	for {
-		pod, err := getReadyPod(ctx, client, ns, labels)
+		pod, err := getReadyPod(ctx, client, ns, labelSelector)
 		if err != nil {
 			log.Print("error looking up target pod: ", err)
 		}
@@ -28,9 +29,11 @@ func WaitForPodReady(ctx context.Context, client ctrl.Client, ns string, labels 
 	}
 }
 
-func getReadyPod(ctx context.Context, client ctrl.Client, ns string, labels map[string]string) (string, error) {
-	podList := corev1.PodList{}
-	if err := client.List(ctx, &podList, ctrl.InNamespace(ns), ctrl.MatchingLabels(labels)); err != nil {
+func getReadyPod(ctx context.Context, client snapclient.Client, ns string, labelSelector string) (string, error) {
+	podList, err := client.CoreV1().Pods(ns).List(ctx, metav1.ListOptions{
+		LabelSelector: labelSelector,
+	})
+	if err != nil {
 		return "", err
 	}
 	for _, pod := range podList.Items {

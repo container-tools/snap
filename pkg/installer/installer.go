@@ -4,14 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-
 	"github.com/container-tools/snap/deploy"
+	snapclient "github.com/container-tools/snap/pkg/client"
 	kubeutils "github.com/container-tools/snap/pkg/util/kubernetes"
 	"github.com/container-tools/snap/pkg/util/log"
 	"github.com/sethvargo/go-password/password"
-	appsv1 "k8s.io/api/apps/v1"
+	"io"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	restclient "k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
@@ -20,9 +21,7 @@ import (
 var (
 	logger = log.WithName("installer")
 
-	serverLabels = map[string]string{
-		"snap.container-tools.io/component": "server",
-	}
+	serverLabelSelector = "snap.container-tools.io/component=server"
 )
 
 const (
@@ -31,8 +30,7 @@ const (
 )
 
 type Installer struct {
-	config *restclient.Config
-	client ctrl.Client
+	client snapclient.Client
 	stdOut io.Writer
 	stdErr io.Writer
 }
@@ -45,18 +43,28 @@ type InstallerSnapCredentials struct {
 	SecretKey      string
 }
 
-func NewInstaller(config *restclient.Config, client ctrl.Client, stdOut, stdErr io.Writer) *Installer {
+func NewInstaller(config *restclient.Config, client ctrl.Client, stdOut, stdErr io.Writer) (*Installer, error) {
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Installer{
-		config: config,
-		client: client,
+		client: snapclient.Client{
+			Interface: clientset,
+			Client:    client,
+			Config:    config,
+		},
 		stdOut: stdOut,
 		stdErr: stdErr,
-	}
+	}, nil
 }
 
 func (i *Installer) IsInstalled(ctx context.Context, ns string) (bool, error) {
-	deploymentList := appsv1.DeploymentList{}
-	if err := i.client.List(ctx, &deploymentList, ctrl.InNamespace(ns), ctrl.MatchingLabels(serverLabels)); err != nil {
+	deploymentList, err := i.client.AppsV1().Deployments(ns).List(ctx, metav1.ListOptions{
+		LabelSelector: serverLabelSelector,
+	})
+	if err != nil {
 		return false, err
 	}
 	return len(deploymentList.Items) > 0, nil
@@ -68,7 +76,7 @@ func (i *Installer) OpenConnection(ctx context.Context, ns string, direct bool) 
 	}
 
 	logger.Info("Waiting for destination pod to be ready...")
-	pod, err := kubeutils.WaitForPodReady(ctx, i.client, ns, serverLabels)
+	pod, err := kubeutils.WaitForPodReady(ctx, i.client, ns, serverLabelSelector)
 	if err != nil {
 		return "", err
 	} else if pod == "" {
@@ -76,7 +84,7 @@ func (i *Installer) OpenConnection(ctx context.Context, ns string, direct bool) 
 	}
 
 	logger.Infof("Opening connection to pod %s", pod)
-	host, err := kubeutils.PortForward(ctx, i.config, ns, pod, i.stdOut, i.stdErr)
+	host, err := kubeutils.PortForward(ctx, i.client.Config, ns, pod, i.stdOut, i.stdErr)
 	if err != nil {
 		return "", err
 	}
@@ -84,8 +92,10 @@ func (i *Installer) OpenConnection(ctx context.Context, ns string, direct bool) 
 }
 
 func (i *Installer) GetDirectConnectionHost(ctx context.Context, ns string) (string, error) {
-	serviceList := corev1.ServiceList{}
-	if err := i.client.List(ctx, &serviceList, ctrl.InNamespace(ns), ctrl.MatchingLabels(serverLabels)); err != nil {
+	serviceList, err := i.client.CoreV1().Services(ns).List(ctx, metav1.ListOptions{
+		LabelSelector: serverLabelSelector,
+	})
+	if err != nil {
 		return "", err
 	}
 	if len(serviceList.Items) == 0 {
@@ -120,10 +130,13 @@ func (i *Installer) EnsureInstalled(ctx context.Context, ns string) error {
 }
 
 func (i *Installer) GetCredentials(ctx context.Context, ns string) (credentials InstallerSnapCredentials, err error) {
-	secrets := corev1.SecretList{}
-	if err := i.client.List(ctx, &secrets, ctrl.InNamespace(ns), ctrl.MatchingLabels(serverLabels)); err != nil {
+	secrets, err := i.client.CoreV1().Secrets(ns).List(ctx, metav1.ListOptions{
+		LabelSelector: serverLabelSelector,
+	})
+	if err != nil {
 		return credentials, err
 	}
+
 	if len(secrets.Items) == 0 {
 		return credentials, errors.New("no credentials found for the server")
 	}
