@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
+
 	"github.com/container-tools/snap/deploy"
 	snapclient "github.com/container-tools/snap/pkg/client"
 	kubeutils "github.com/container-tools/snap/pkg/util/kubernetes"
 	"github.com/container-tools/snap/pkg/util/log"
+
 	"github.com/sethvargo/go-password/password"
-	"io"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
