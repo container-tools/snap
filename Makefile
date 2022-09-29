@@ -1,6 +1,6 @@
 
 GOLDFLAGS += -X main.GitCommit=$(GIT_COMMIT)
-GOFLAGS = -ldflags "$(GOLDFLAGS)" -gcflags=-trimpath=$(GO_PATH) -asmflags=-trimpath=$(GO_PATH)
+GOFLAGS = -ldflags "$(GOLDFLAGS)" -trimpath
 
 default: build
 

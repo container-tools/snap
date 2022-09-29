@@ -3,12 +3,13 @@ package kubernetes
 import (
 	"context"
 	"errors"
-	snapclient "github.com/container-tools/snap/pkg/client"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"time"
 
+	snapclient "github.com/container-tools/snap/pkg/client"
+
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func WaitForPodReady(ctx context.Context, client snapclient.Client, ns string, labelSelector string) (string, error) {

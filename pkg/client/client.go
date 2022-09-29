@@ -2,11 +2,9 @@ package client
 
 import (
 	"io/ioutil"
-	"k8s.io/client-go/kubernetes"
 	"os"
 	"os/user"
 	"path/filepath"
-	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -16,8 +14,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 
+	"k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
 	clientcmdlatest "k8s.io/client-go/tools/clientcmd/api/latest"
+	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
